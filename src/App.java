@@ -9,31 +9,31 @@ public class App {
         String pString = "";
         // for each number print out fizz if it is divisible by 3, buzz if it is divisible by 5, fizzbuzz if it is divisible by both 3 and 5, or the number itself otherwise
         for (int i = 0; i < 100000; i ++){
-            if (i % 3 == 0 && i % 5 == 0){
-                pString += "FizzBuzz\n";
+            String numberString = "";
+            if (i % 3 == 0){
+                numberString += "Fizz";
             }
-            else if (i % 3 == 0){
-                pString += "Fizz\n";
+            if (i % 5 == 0){
+                numberString += "Buzz";
             }
-            else if (i % 5 == 0){
-                pString += "Buzz\n";
+            if (numberString.equals("")){
+                numberString += i;
             }
-            else {
-                pString += i + "\n";
-            }
+            pString += numberString + "\n";
+
         }
-        //System.out.println(pString);
+        System.out.println(pString);
 
         //print out the time it took to run
         long endTime = System.currentTimeMillis();
         System.out.println("Time: " + (endTime - startTime) + "ms");
 
         //write the output to a file called output.txt
-        // File file = new File("output.txt");
-        // FileWriter fw = new FileWriter(file);
-        // BufferedWriter bw = new BufferedWriter(fw);
-        // bw.write(pString);
-        // bw.close();
+        File file = new File("output.txt");
+        FileWriter fw = new FileWriter(file);
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(pString);
+        bw.close();
         
     }
 }
