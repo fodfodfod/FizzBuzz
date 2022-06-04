@@ -6,13 +6,11 @@ public class FizzBuzz implements Runnable{
         this.start = start;
         this.end = end;
         this.pString = pString;
-        pString.append("hi");
     }
 
     @Override
     public void run() {
         
-        System.out.println("hi");
         for (int i = start; i <= end; i ++){
             String numberString = "";
             if (i % 3 == 0){
