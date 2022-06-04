@@ -5,7 +5,7 @@ import java.io.FileWriter;
 public class App {
     
         public static void main(String[] args) throws Exception {
-        final int threadCount = 8;
+        final int threadCount = 10;
         final int range = 10000000;
         //get the current time
         long startTime = System.currentTimeMillis();
