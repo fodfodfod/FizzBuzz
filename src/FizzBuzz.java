@@ -1,8 +1,8 @@
 public class FizzBuzz implements Runnable{
     private int start;
     private int end;
-    private BetterStringBuilder pString;
-    public FizzBuzz(int start, int end, BetterStringBuilder pString) {
+    private StringBuilder pString;
+    public FizzBuzz(int start, int end, StringBuilder pString) {
         this.start = start;
         this.end = end;
         this.pString = pString;
@@ -10,7 +10,7 @@ public class FizzBuzz implements Runnable{
  
     @Override
     public void run() {
-        System.out.println(end);
+        // System.out.println(end);
         for (int i = start; i <= end; i ++){
             String numberString = "";
             if (i % 3 == 0){

@@ -7,35 +7,61 @@ public class App {
         public static void main(String[] args) throws Exception {
         
         final int threadCount = 10;
-        final int range = 1000000;
+        final int range = 10000000;
+        final int chunkSize = 100000;
+
         //get the current time
         long startTime = System.currentTimeMillis();
        
-        BetterStringBuilder[] threadStrings = new BetterStringBuilder[threadCount];
+        StringBuilder[] threadStrings = new StringBuilder[range/chunkSize];
         
+
+        int threadsCreated = 0;
         //create 4 threads
-        Thread[] threads = new Thread[threadCount];
-        for (int i = 0; i < threadCount; i++){
+        Thread[] threads = new Thread[range/chunkSize];
+        while ( threadsCreated < threadCount){
  
-            threadStrings[i] = new BetterStringBuilder();
+            threadStrings[threadsCreated] = new StringBuilder();
  
-            threads[i] = new Thread(new FizzBuzz(i * range / threadCount + 1, (i + 1) * range / threadCount, threadStrings[i]));
+            threads[threadsCreated] = new Thread(new FizzBuzz(threadsCreated * range / threadCount + 1, (threadsCreated + 1) * range / threadCount, threadStrings[threadsCreated]));
+            threads[threadsCreated].start();
+            threadsCreated++;
         }
-        //start the threads
-        for (int i = 0; i < threadCount; i++){
-            threads[i].start();
-        }
+        
+        System.out.println("Initial threads started");
         //join the threads to main thread
-        for (int i = 0; i < threadCount; i++){
+        for (int i = 0; i < threads.length; i++){
+
+            //create a new thread if there are still threads to create
+            if (threadsCreated < threadCount){
+                threadStrings[threadsCreated] = new StringBuilder();
+                threads[threadsCreated] = new Thread(new FizzBuzz(threadsCreated * chunkSize, (threadsCreated + 1) * chunkSize, threadStrings[threadsCreated]));
+                //start the new thread
+                threads[threadsCreated].start();
+                threadsCreated++;
+            }
+
+
             threads[i].join();
+            System.out.println("Thread " + i + " finished");
+            //append the stringbuilder to the file
+            File file = new File("output.txt");
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(threadStrings[i].toString());
+            bw.close();
+            
+
+            
+            
         }
-       
+        System.out.println("All threads joined");
  
         //combine the strings and print them out
-        String pString = "";
-        for (int i = 0; i < threadCount; i++){
-            pString += threadStrings[i].toString();
-        }
+        // String pString = "";
+        // for (int i = 0; i < threadCount; i++){
+        //     pString += threadStrings[i].toString();
+        // }
         // System.out.print(t1String);
         // System.out.print(pString);
  
@@ -43,11 +69,11 @@ public class App {
        
  
         //write the output to a file called output.txt
-        File file = new File("output.txt");
-        FileWriter fw = new FileWriter(file);
-        BufferedWriter bw = new BufferedWriter(fw);
-        bw.write(pString);
-        bw.close();
+        // File file = new File("output.txt");
+        // FileWriter fw = new FileWriter(file);
+        // BufferedWriter bw = new BufferedWriter(fw);
+        // bw.write(pString);
+        // bw.close();
        
         long endTime = System.currentTimeMillis();
         System.out.println("Time: " + (endTime - startTime) + "ms");
