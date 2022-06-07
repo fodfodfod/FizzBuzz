@@ -6,19 +6,26 @@ public class App {
    
         public static void main(String[] args) throws Exception {
         
+        /**max number of threads allowed to exist at one time(not including main thread) */
         final int threadCount = 10;
-        final int range = 10000000;
+        final int range = 100000000;
         final int chunkSize = 100000;
 
         //get the current time
         long startTime = System.currentTimeMillis();
        
-        StringBuilder[] threadStrings = new StringBuilder[range/chunkSize];
+
+
+        //reset the file
+        File tempFile = new File("output.txt");
+        tempFile.delete();
+        StringBuilder[] threadStrings = new StringBuilder[(range/chunkSize) + 1];
         
 
         int threadsCreated = 0;
+        int threadsRunning = 0;
         //create 4 threads
-        Thread[] threads = new Thread[range/chunkSize];
+        Thread[] threads = new Thread[(range/chunkSize) + 1];
         while ( threadsCreated < threadCount){
  
             threadStrings[threadsCreated] = new StringBuilder();
@@ -26,24 +33,29 @@ public class App {
             threads[threadsCreated] = new Thread(new FizzBuzz(threadsCreated * range / threadCount + 1, (threadsCreated + 1) * range / threadCount, threadStrings[threadsCreated]));
             threads[threadsCreated].start();
             threadsCreated++;
+            threadsRunning++;
         }
         
         System.out.println("Initial threads started");
         //join the threads to main thread
         for (int i = 0; i < threads.length; i++){
+            threads[i].join();
+            threadsRunning--;
+            System.out.println("Thread " + i + " finished");
 
+            
             //create a new thread if there are still threads to create
-            if (threadsCreated < threadCount){
+            if (threadsRunning < threadCount && threadsCreated < threads.length){
                 threadStrings[threadsCreated] = new StringBuilder();
                 threads[threadsCreated] = new Thread(new FizzBuzz(threadsCreated * chunkSize, (threadsCreated + 1) * chunkSize, threadStrings[threadsCreated]));
                 //start the new thread
                 threads[threadsCreated].start();
                 threadsCreated++;
+                threadsRunning++;
             }
 
 
-            threads[i].join();
-            System.out.println("Thread " + i + " finished");
+            
             //append the stringbuilder to the file
             File file = new File("output.txt");
             FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
